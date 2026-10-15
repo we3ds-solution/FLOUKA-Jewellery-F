@@ -1,0 +1,4 @@
+import { createFileRoute } from '@tanstack/react-router';
+import { HelpLayout } from '@/components/store/help-page';
+import { meta } from '@/lib/seo';
+export const Route = createFileRoute('/about-us')({ head: () => meta('عن فلوكة — Floukaa', 'فلوكة متجر إكسسوارات وهدايا على الإنترنت من بورسعيد، مصر.'), component: () => <HelpLayout title="عن فلوكة" intro="تفاصيل صغيرة، فرحة كبيرة."><div className="support-prose"><p>فلوكة للإكسسوارات والهدايا — متجر على الإنترنت في بورسعيد، مصر.</p><p>اكتشفي السلاسل والأساور والحلقان والخواتم والخلاخيل وإكسسوارات الأطفال من تشكيلات فلوكة.</p></div></HelpLayout> });
