@@ -10,6 +10,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { Reveal } from "@/components/store/motion";
 import { Button } from "@/components/ui/button";
 import { formatCurrency, getProduct, getRelated } from "@/lib/shopify";
+import { optionLabel } from "@/lib/catalog/option-labels";
 import { useCart } from "@/stores/cart";
 import { useWishlist } from "@/stores/wishlist";
 import { useCompare } from '@/stores/compare';
@@ -39,7 +40,7 @@ function ProductPage() {
   const { data: p } = useSuspenseQuery(productQuery(handle));
   const [img, setImg] = useState(0);
   const [sel, setSel] = useState<Record<string, string>>({});
-  useEffect(() => { setImg(0); setSel({}); }, [handle]);
+  useEffect(() => { setImg(0); setSel({}); setQty(1); }, [handle]);
   const related = useQuery({ queryKey: ['related', handle], queryFn: () => getRelated(handle, 8) });
   const [qty, setQty] = useState(1);
   const add = useCart((s) => s.addItem);
@@ -100,7 +101,7 @@ function ProductPage() {
         )}
         {p.options.map((o) => (
           <div key={o.name} className="mt-6">
-            <p className="text-sm font-bold">{o.name === "ring size" ? "مقاس الخاتم" : o.name.replace(/^l/, "")}: <span className="font-normal text-muted-foreground">{chosen[o.name]}</span></p>
+            <p className="text-sm font-bold">{optionLabel(o.name)}: <span className="font-normal text-muted-foreground">{chosen[o.name]}</span></p>
             <div className="mt-3 flex flex-wrap gap-2">
               {o.values.map((val) => (
                 <Button key={val} variant={chosen[o.name] === val ? "default" : "outline"} size="sm" className="max-w-full truncate" onClick={() => setSel((x) => ({ ...x, [o.name]: val }))}>{val}</Button>

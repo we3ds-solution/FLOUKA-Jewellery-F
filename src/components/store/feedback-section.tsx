@@ -1,6 +1,7 @@
 import { useT } from '@/lib/i18n'
 import { Quote } from "lucide-react";
 import { SocialIcon } from "@/components/store/social-icon";
+import { socialHref } from "@/components/store/social-links";
 import { LordIcon } from "@/components/store/lord-icon";
 import { motion } from "motion/react";
 import { Reveal, Stagger, StaggerItem } from "./motion";
@@ -100,7 +101,7 @@ export function FeedbackSection() {
         </div>
         <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
           <a
-            href="https://www.instagram.com/flouka_/"
+            href={socialHref("instagram")}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-accent-surface px-7 text-sm font-bold text-primary-foreground transition-transform hover:-translate-y-0.5"
@@ -109,7 +110,7 @@ export function FeedbackSection() {
             {t("تابعينا على إنستجرام")}
           </a>
           <a
-            href="https://www.facebook.com/FLOUKA10/"
+            href={socialHref("facebook")}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-border bg-card px-7 text-sm font-bold text-foreground transition-transform hover:-translate-y-0.5"

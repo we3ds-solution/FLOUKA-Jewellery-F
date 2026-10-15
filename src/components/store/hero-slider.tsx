@@ -63,8 +63,8 @@ export function HeroSlider() {
         touchStart.current = null;
       }}>
       <div className="hero-scenes" aria-hidden="true">
-        {HERO_SLIDES.map((item, index) => <div key={item.id} className="hero-scene" data-active={index === active} data-original={item.original}>
-          <img src={item.image} alt="" loading={index === 0 ? 'eager' : 'lazy'} fetchPriority={index === 0 ? 'high' : 'auto'} width={item.original ? 580 : 1536} height={item.original ? 617 : 1024} />
+        {HERO_SLIDES.map((item, index) => <div key={item.id} className="hero-scene" data-active={index === active}>
+          <img src={item.image} alt="" loading={index === 0 ? 'eager' : 'lazy'} fetchPriority={index === 0 ? 'high' : 'auto'} width={item.width} height={item.height} decoding="async" />
         </div>)}
       </div>
       <div className="hero-cinema-shade" />

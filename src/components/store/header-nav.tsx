@@ -1,4 +1,5 @@
 import { useT } from '@/lib/i18n'
+import { Link } from '@tanstack/react-router'
 import { useEffect, useId, useRef, useState, type KeyboardEvent } from 'react'
 import { ArrowUpLeft, ChevronDown } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -63,19 +64,19 @@ export function HeaderNav({ path, mobile = false, onNavigate }: { path: string; 
         onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget)) closeLater() }}
         onFocus={cancelClose} onKeyDown={event => keyboard(event, item.label)}>
         <div className="nav-entry-row">
-          <Button asChild variant="navigation"><a href={item.href} onClick={navigate} aria-current={path === item.href ? 'page' : undefined}>{t(item.label)}</a></Button>
+          <Button asChild variant="navigation"><Link to={item.href} onClick={navigate} aria-current={path === item.href ? 'page' : undefined}>{t(item.label)}</Link></Button>
           {children.length > 0 && <Button variant="navDisclosure" size="icon" aria-label={`${t('أقسام')} ${t(item.label)}`} aria-controls={submenuId} aria-expanded={isOpen} onClick={() => { cancelClose(); setExpanded(isOpen ? null : item.label) }}><ChevronDown /></Button>}
         </div>
         {children.length > 0 && <div id={submenuId} className={`nav-submenu ${photo ? 'has-photo' : ''}`} aria-hidden={!isOpen} inert={!isOpen}>
           <div className="nav-submenu-inner">
             <div className="nav-submenu-links">{children.map(child => {
               const childPhoto = photos[child.href.replace('/category/c', '')]
-              return <Button asChild variant="submenu" key={child.href}><a href={child.href} onClick={navigate} aria-current={path === child.href ? 'page' : undefined}>
+              return <Button asChild variant="submenu" key={child.href}><Link to={child.href} onClick={navigate} aria-current={path === child.href ? 'page' : undefined}>
                 {childPhoto && <img className="submenu-thumbnail" src={childPhoto} alt="" loading="lazy" width="56" height="56" />}
                 <span>{t(child.label)}</span><ArrowUpLeft className="submenu-arrow" />
-              </a></Button>
+              </Link></Button>
             })}</div>
-            {photo && <a className="submenu-feature" href={item.href} onClick={navigate}><div className="submenu-feature-image"><img src={photo} alt={t(item.label)} loading="lazy" width="280" height="240" /></div><span>{t(item.label)}<ArrowUpLeft /></span></a>}
+            {photo && <Link className="submenu-feature" to={item.href} onClick={navigate}><div className="submenu-feature-image"><img src={photo} alt={t(item.label)} loading="lazy" width="280" height="240" /></div><span>{t(item.label)}<ArrowUpLeft /></span></Link>}
           </div>
         </div>}
       </div>
