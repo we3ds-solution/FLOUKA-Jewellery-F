@@ -32,7 +32,7 @@ function Overview() {
       </div>
       <div className="account-card">
         <div className="account-card-head"><h2>عنوان التوصيل الأساسي</h2><Link to="/account/addresses">إدارة العناوين</Link></div>
-        {home ? <div className="text-sm leading-7"><b>{home.label}</b><p>{home.street}، {home.city}، {home.governorate}</p><p className="text-muted-foreground" dir="ltr">{home.phone}</p></div>
+        {home ? <div className="text-sm leading-7"><b>{home.label}</b><p>{home.street}، {home.city}، {home.governorate}</p><p className="text-end text-muted-foreground" dir="ltr">{home.phone}</p></div>
           : <EmptyState title="مفيش عنوان محفوظ" text="ضيفي عنوانك علشان الطلب يوصل أسرع." to="/account/addresses" cta="إضافة عنوان" />}
       </div>
     </div>

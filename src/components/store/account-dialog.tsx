@@ -21,10 +21,10 @@ export function AccountDialog() {
   const [email, setEmail] = useState(''), [password, setPassword] = useState('');
   const isRegister = mode === 'register';
   function done() { setOpen(false); setError(''); setPassword(''); notify(t(isRegister ? 'تم إنشاء حسابك' : 'تم تسجيل الدخول'), t('أهلًا بيكي في فلوكة')); if (!path.startsWith('/account')) void navigate({ to: '/account' }); }
-  function submit(event: FormEvent<HTMLFormElement>) {
+  async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (isRegister) { const name = String(new FormData(event.currentTarget).get('name') ?? ''); register(name, email, password); return done(); }
-    if (login(email, password)) return done();
+    if (isRegister) { const name = String(new FormData(event.currentTarget).get('name') ?? ''); await register(name, email, password); return done(); }
+    if (await login(email, password)) return done();
     setError('البريد الإلكتروني أو كلمة المرور غير صحيحة.');
   }
   function fillDemo() { setMode('login'); setEmail(DEMO_EMAIL); setPassword(DEMO_PASSWORD); setError(''); }

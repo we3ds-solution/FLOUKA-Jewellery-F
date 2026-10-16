@@ -9,6 +9,10 @@ import type { Address, Order, Profile } from "./account-types";
 /** Demo-only account kept in this browser. Nothing is sent to a server. */
 export const DEMO_EMAIL = "demo@floukaa.com";
 export const DEMO_PASSWORD = "12345678";
+// Precomputed salted hash of DEMO_PASSWORD (see password-hash.ts) so the
+// persisted demo profile never carries a plain-text password.
+export const DEMO_PASSWORD_HASH =
+  "8ebd093fcf6250437aef9d87070a0a7248b1b2dc104dcd68179ee9c8fa9f5b04";
 
 export const demoAddresses: Address[] = [
   {
@@ -81,5 +85,5 @@ export const demoProfile: Profile = {
   email: DEMO_EMAIL,
   phone: "01012345678",
   birthday: "1998-04-12",
-  password: DEMO_PASSWORD,
+  passwordHash: DEMO_PASSWORD_HASH,
 };

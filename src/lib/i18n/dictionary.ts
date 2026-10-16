@@ -20,6 +20,8 @@ export const EN: Record<string, string> = {
   "تم حفظ بيانات الحساب": "Account details saved",
   "تم تغيير كلمة المرور": "Password updated",
   "تم حفظ تفضيلات الإشعارات": "Notification preferences saved",
+  "تم حفظ العنوان": "Address saved",
+  "تم حذف العنوان": "Address removed",
   // Header / shell
   القائمة: "Menu",
   بحث: "Search",

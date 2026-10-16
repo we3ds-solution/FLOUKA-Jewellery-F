@@ -3,7 +3,18 @@
 Audit of https://github.com/we3ds-solution/FLOUKA-Jewellery-F (storefront for floukaa.com).
 Source: deep code review, Oct 2026.
 
-Track these as GitHub Issues. Issue #2 already exists (title only; body should be replaced with §1).
+Track these as GitHub Issues (we3ds-solution/FLOUKA-Jewellery-F #2–#9).
+
+| § | Title | Issue | Status |
+|---|-------|-------|--------|
+| 1 | Replace demo auth (plain-text passwords) | #2 | Partial: salted hashes at rest (`password-hash.ts`); full Supabase Auth still open |
+| 2 | Cart local-only, no server validation | #3 | Partial: real catalog `syncCart` revalidation; server cart API still open |
+| 3 | Catalog failure handling | #4 | Partial: offline banner + pinned contract tests; rate-limit/E2E still open |
+| 4 | Supabase env handling | #5 | Partial: contact-form soft-fail + env docs; real auth wiring still open |
+| 5 | Notifications session-only | #6 | Done: documented scope (README + code) |
+| 6 | Test coverage | #7 | Partial: cart/account/catalog/i18n units added; E2E still open |
+| 7 | Footer social polish | #8 | Done: verified light/dark/reduced-motion, no fix needed |
+| 8 | README/docs | #9 | Done: README rewritten |
 
 ---
 

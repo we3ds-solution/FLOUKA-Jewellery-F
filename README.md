@@ -1,24 +1,58 @@
-# Notification Hub
+# FLOUKA Jewellery — Storefront
 
-now focus to be have option notification from header when login see it to using from have ui need to use when also looking very will to working with sonnar toaster inner this app very will when have this sonnar x close very looking from have ui to using very will and be have this very will from have
+TanStack Start storefront for [floukaa.com](https://floukaa.com) — accessories and gifts (Arabic-first, RTL). Catalog data loads live from the WooCommerce export; checkout hands off to floukaa.com.
 
-This project was built with [Lovable](https://lovable.dev).
+## Stack
 
-## Build with Lovable
+- **TanStack Start + TanStack Router** (file routes in `src/routes`, see `src/routes/README.md`) **+ TanStack Query**
+- **React 19**, **Tailwind CSS v4**, **shadcn-style ui** (`src/components/ui`), **Zustand** stores (`src/stores`)
+- **Vite 8**, **Vitest**, **pnpm** (see `package.json` → `packageManager`)
 
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/ba2229eb-06bf-44c6-be3b-20f3e7b6e0b5).
+## Prerequisites
 
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitLab and your changes sync back into Lovable, ready for your next prompt.
+- Node.js 24
+- pnpm 10 via corepack (no global install needed):
+  ```sh
+  corepack enable
+  corepack prepare pnpm@10.18.0 --activate
+  ```
 
 ## Development
 
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
-
 ```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
-npm run dev
+pnpm install
+pnpm dev      # local dev on http://localhost:5173
+pnpm build    # production build
+pnpm preview  # preview the build
+pnpm test     # vitest run
+pnpm lint     # eslint
 ```
+
+## Environment
+
+| Variable | Required | Used by |
+|---|---|---|
+| `SUPABASE_URL` / `SUPABASE_PUBLISHABLE_KEY` | Server contact form | `src/lib/support/contact.ts` via `src/integrations/supabase/client.server.ts` |
+| `SUPABASE_SERVICE_ROLE_KEY` | Server contact form | Same as above (never exposed to the client) |
+
+Without Supabase env, the contact form degrades to a friendly "unavailable" message instead of crashing. No `VITE_*` vars are required for the storefront itself.
+
+## Architecture map
+
+- `src/lib/catalog/*` — catalog data layer: `woo-types` (shapes) → `html` (text) → `family` (color/size grouping, one card per family) → `woo-map` (Woo → storefront) → `catalog-cache` (fetch + filter) → `catalog-query` (public API). `src/lib/floukaa.functions.ts` re-exports the surface.
+- `src/lib/shopify.ts` — storefront facade (`getProducts` / `getProduct` / `getRelated`); money formatting lives in `src/lib/format.ts`.
+- `src/lib/i18n/*` — dictionary → store → DOM → React hooks (`useT`, `useDir`).
+- `src/stores/` — `account` (demo profile, hashed-at-rest), `cart` (local + catalog revalidation), `compare`, `wishlist`, `notifications` (see below).
+- `src/components/store/` — header/shell, hero, catalog, product (`product/`), account UI.
+
+## Scope notes (demo behavior, keep it)
+
+- **Account** is a browser-local demo (`demo@floukaa.com`); passwords are stored as salted hashes only, never plain text. Real server auth is tracked in GitHub issue #2.
+- **Notifications** are session-only activity + Sonner toasts — UI feedback, not delivery (issue #6).
+- **Cart** is local with catalog revalidation on sync; checkout completes on floukaa.com (issue #3).
+
+## Docs
+
+- `docs/CODE_REVIEW_ISSUES.md` — audit backlog, each item tracked as a GitHub issue (#2–#9).
+- `roadmap.md` — shipped vs remaining storefront checklist.
+- `src/routes/README.md` — routing conventions (TanStack file routes — no Next.js/Remix patterns).

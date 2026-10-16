@@ -7,7 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useDir } from "@/lib/i18n";
+import { useDir, useT } from "@/lib/i18n";
+import { notify } from '@/stores/notifications';
 import { AccountSection, formText } from "@/components/store/account-ui";
 import { useAccount, type Address } from "@/stores/account";
 
@@ -19,13 +20,13 @@ function Addresses() {
   const list = useAccount(s => s.addresses), save = useAccount(s => s.saveAddress), remove = useAccount(s => s.removeAddress), setDefault = useAccount(s => s.setDefaultAddress);
   const profile = useAccount(s => s.profile);
   const [editing, setEditing] = useState<Address | null>(null);
-  const dir = useDir();
+  const dir = useDir(), t = useT();
   const blank = (): Address => ({ id: crypto.randomUUID(), label: "", name: profile?.name ?? "", phone: profile?.phone ?? "", governorate: "القاهرة", city: "", street: "", isDefault: list.length === 0 });
   function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault(); if (!editing) return;
     const form = e.currentTarget, v = (k: string) => formText(form, k);
     save({ ...editing, label: v("label") || "عنوان", name: v("name"), phone: v("phone"), governorate: v("governorate"), city: v("city"), street: v("street"), isDefault: new FormData(form).get("isDefault") === "on" || editing.isDefault });
-    setEditing(null);
+    setEditing(null); notify(t('تم حفظ العنوان'));
   }
   return <AccountSection title="العناوين" description="عناوين التوصيل المحفوظة." action={<Button onClick={() => setEditing(blank())}><Plus className="size-4" />إضافة عنوان</Button>}>
     {list.length ? <div className="grid gap-4 md:grid-cols-2">{list.map(a => <div key={a.id} className="account-card text-sm leading-7" data-default={a.isDefault}>
@@ -34,7 +35,7 @@ function Addresses() {
       <div className="mt-3 flex flex-wrap gap-2">
         <Button size="sm" variant="outline" onClick={() => setEditing(a)}><Pencil className="size-3.5" />تعديل</Button>
         {!a.isDefault && <Button size="sm" variant="ghost" onClick={() => setDefault(a.id)}>اجعليه الأساسي</Button>}
-        <Button size="sm" variant="ghost" className="text-destructive" onClick={() => remove(a.id)} aria-label={`حذف ${a.label}`}><Trash2 className="size-3.5" />حذف</Button>
+        <Button size="sm" variant="ghost" className="text-destructive" onClick={() => { remove(a.id); notify(t('تم حذف العنوان')); }} aria-label={`حذف ${a.label}`}><Trash2 className="size-3.5" />حذف</Button>
       </div>
     </div>)}</div> : <div className="account-empty"><b className="text-lg font-black">مفيش عناوين محفوظة</b><p className="text-sm text-muted-foreground">ضيفي أول عنوان ليكي.</p></div>}
     <Dialog open={!!editing} onOpenChange={o => !o && setEditing(null)}>

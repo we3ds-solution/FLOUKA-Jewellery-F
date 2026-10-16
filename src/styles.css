@@ -775,6 +775,8 @@ a.order-row:hover { border-color: var(--accent); }
 .account-select { height: 2.25rem; border-radius: calc(var(--radius) - 2px); border: 1px solid var(--input); background: transparent; padding-inline: .75rem; font-size: .9rem; }
 .account-setting { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .75rem 0; border-bottom: 1px solid var(--border); }
 .account-setting:last-child { border-bottom: 0; }
+/* Radix Switch thumb slides +x when on; mirror it in RTL so "on" stays at the inline-start side. */
+[dir="rtl"] button[role="switch"][data-state="checked"] > span { translate: -1rem 0; }
 .account-demo-hint { display: grid; justify-items: center; gap: .5rem; padding: .75rem; border-radius: calc(var(--radius) - 2px); background: var(--muted); font-size: .8rem; }
 
 /* Calendar sizing stays inside the popover, including narrow RTL layouts. */

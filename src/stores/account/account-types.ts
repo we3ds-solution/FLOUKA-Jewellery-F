@@ -25,6 +25,6 @@ export type Profile = {
   email: string;
   phone: string;
   birthday: string;
-  password: string;
+  passwordHash: string;
 };
 export type Prefs = { offers: boolean; orderUpdates: boolean; newsletter: boolean };

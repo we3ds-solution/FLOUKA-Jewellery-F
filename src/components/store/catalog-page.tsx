@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { useT } from '@/lib/i18n'
 import { ProductCard } from './product-card'
 import { Reveal, Stagger, StaggerItem } from './motion'
@@ -12,6 +13,13 @@ export function CatalogPage({ title = 'كل المنتجات', query, search }: 
   const base = cat ? undefined : query
   const c = useCatalog(base, { ...(cat ? { category: cat } : {}), ...(search ? { search } : {}) })
   const from = (c.state.page - 1) * PER_PAGE + 1, to = Math.min(c.state.page * PER_PAGE, c.total)
+  const [online, setOnline] = useState(() => typeof navigator === 'undefined' || navigator.onLine)
+  useEffect(() => {
+    const up = () => setOnline(true), down = () => setOnline(false)
+    window.addEventListener('online', up)
+    window.addEventListener('offline', down)
+    return () => { window.removeEventListener('online', up); window.removeEventListener('offline', down) }
+  }, [])
 
   return (
     <div className="mx-auto max-w-[1400px] px-4 py-8 sm:px-6 sm:py-10">
@@ -23,6 +31,7 @@ export function CatalogPage({ title = 'كل المنتجات', query, search }: 
         </p>
       </Reveal>
       <CatalogToolbar state={c.state} update={c.update} reset={c.reset} activeCount={c.activeCount} hideCategory={!!cat} hideSale={query === 'tag:sale'} />
+      {!online && <p role="alert" className="mt-4 rounded-2xl border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm font-bold text-destructive">مفيش اتصال بالإنترنت — المعروض نسخة قديمة وأي تحديث هيستنى الاتصال.</p>}
       {c.loading
         ? <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">{Array.from({ length: 10 }, (_, i) => <div key={i} className="aspect-[4/5] animate-pulse rounded-2xl bg-muted" />)}</div>
         : c.products.length

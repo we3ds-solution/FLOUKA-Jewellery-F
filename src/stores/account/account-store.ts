@@ -1,9 +1,13 @@
 // SRP: account state + persistence only. Types live in account-types,
 // demo fixtures in demo-account, presentation in order-format.
+// Passwords are never stored: login/register/changePassword compare and
+// persist salted hashes only (see password-hash.ts). Full server auth is
+// tracked in GitHub #2.
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import type { Address, Order, Prefs, Profile } from "./account-types";
-import { DEMO_EMAIL, DEMO_PASSWORD, demoAddresses, demoOrders, demoProfile } from "./demo-account";
+import { DEMO_EMAIL, demoAddresses, demoOrders, demoProfile } from "./demo-account";
+import { hashPassword } from "./password-hash";
 
 type S = {
   hydrated: boolean;
@@ -14,11 +18,11 @@ type S = {
   addresses: Address[];
   prefs: Prefs;
   setDialogOpen(open: boolean): void;
-  login(email: string, password: string): boolean;
-  register(name: string, email: string, password: string): void;
+  login(email: string, password: string): Promise<boolean>;
+  register(name: string, email: string, password: string): Promise<void>;
   logout(): void;
-  updateProfile(p: Partial<Omit<Profile, "password">>): void;
-  changePassword(current: string, next: string): boolean;
+  updateProfile(p: Partial<Omit<Profile, "passwordHash">>): void;
+  changePassword(current: string, next: string): Promise<boolean>;
   saveAddress(a: Address): void;
   removeAddress(id: string): void;
   setDefaultAddress(id: string): void;
@@ -36,14 +40,15 @@ export const useAccount = create<S>()(
       addresses: [],
       prefs: { offers: true, orderUpdates: true, newsletter: false },
       setDialogOpen: (dialogOpen) => set({ dialogOpen }),
-      login: (email, password) => {
-        const e = email.trim().toLowerCase(),
-          saved = get().profile;
-        if (saved && saved.email.toLowerCase() === e && saved.password === password) {
+      login: async (email, password) => {
+        const e = email.trim().toLowerCase();
+        const hash = await hashPassword(password);
+        const saved = get().profile;
+        if (saved && saved.email.toLowerCase() === e && saved.passwordHash === hash) {
           set({ signedIn: true });
           return true;
         }
-        if (e === DEMO_EMAIL && password === DEMO_PASSWORD) {
+        if (e === DEMO_EMAIL && hash === demoProfile.passwordHash) {
           set({
             signedIn: true,
             profile: demoProfile,
@@ -54,22 +59,29 @@ export const useAccount = create<S>()(
         }
         return false;
       },
-      register: (name, email, password) =>
+      register: async (name, email, password) => {
         set({
           signedIn: true,
-          profile: { name: name.trim(), email: email.trim(), phone: "", birthday: "", password },
+          profile: {
+            name: name.trim(),
+            email: email.trim(),
+            phone: "",
+            birthday: "",
+            passwordHash: await hashPassword(password),
+          },
           orders: [],
           addresses: [],
-        }),
+        });
+      },
       logout: () => set({ signedIn: false }),
       updateProfile: (p) => {
         const cur = get().profile;
         if (cur) set({ profile: { ...cur, ...p } });
       },
-      changePassword: (current, next) => {
+      changePassword: async (current, next) => {
         const cur = get().profile;
-        if (!cur || cur.password !== current) return false;
-        set({ profile: { ...cur, password: next } });
+        if (!cur || cur.passwordHash !== (await hashPassword(current))) return false;
+        set({ profile: { ...cur, passwordHash: await hashPassword(next) } });
         return true;
       },
       saveAddress: (a) => {

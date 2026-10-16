@@ -19,10 +19,10 @@ function Details() {
     e.preventDefault(); const form = e.currentTarget;
     update({ name: formText(form, "name"), email: formText(form, "email"), phone: formText(form, "phone"), birthday: formText(form, "birthday") }); setSaved(true); notify(t('تم حفظ بيانات الحساب'));
   }
-  function savePw(e: FormEvent<HTMLFormElement>) {
+  async function savePw(e: FormEvent<HTMLFormElement>) {
     e.preventDefault(); const form = e.currentTarget, f = new FormData(form), cur = String(f.get("current")), next = String(f.get("next")), confirm = String(f.get("confirm"));
     if (next !== confirm) return setPw({ ok: false, text: "كلمتين المرور الجداد مش زي بعض." });
-    if (!changePassword(cur, next)) return setPw({ ok: false, text: "كلمة المرور الحالية غلط." });
+    if (!(await changePassword(cur, next))) return setPw({ ok: false, text: "كلمة المرور الحالية غلط." });
     form.reset(); setPw({ ok: true, text: "تم تغيير كلمة المرور." }); notify(t('تم تغيير كلمة المرور'));
   }
   if (!profile) return null;

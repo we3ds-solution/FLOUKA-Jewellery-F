@@ -2,5 +2,5 @@
 - [x] Add signed-in header notifications on desktop, mobile, and the side rail.
 - [x] Style and connect dismissible Sonner messages to account actions.
 - [x] Verify sign-in, notifications, close controls, and preview errors.
-- [ ] Add footer YouTube and fix TikTok contrast with polished social animations.
-- [ ] Verify footer social icons in both themes and reduced-motion mode.
+- [x] Add footer YouTube and fix TikTok contrast with polished social animations.
+- [x] Verify footer social icons in both themes and reduced-motion mode.

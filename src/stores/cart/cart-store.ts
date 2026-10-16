@@ -4,6 +4,7 @@ import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import type { CartState } from "./cart-types";
 import { checkoutFor } from "./checkout-url";
+import { syncCartFromCatalog } from "./cart-sync";
 
 export const useCart = create<CartState>()(
   persist(
@@ -32,8 +33,15 @@ export const useCart = create<CartState>()(
         const next = get().items.filter((i) => i.variantId !== id);
         set({ items: next, checkoutUrl: checkoutFor(next) });
       },
-      /** @deprecated Local-only cart; kept as a no-op so existing callers don't break. */
-      syncCart: async () => {},
+      /** Re-resolves lines against the catalog (price/title refresh, drops vanished lines). Offline-safe: keeps the local cart on failure. */
+      syncCart: async () => {
+        try {
+          const { items } = await syncCartFromCatalog(get().items);
+          set({ items, checkoutUrl: checkoutFor(items) });
+        } catch {
+          /* Catalog unreachable: keep the local cart untouched. */
+        }
+      },
     }),
     {
       name: "floukaa-cart-v2",
