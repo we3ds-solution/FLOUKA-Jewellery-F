@@ -522,7 +522,7 @@ footer a:focus-visible { outline-color: var(--header-focus); }
  .hero-floating-nav { display: none; } .hero-floating-header { top: 18px; width: calc(100% - 28px); min-height: 60px; padding-inline: 16px; gap: 8px; }
  .hero-floating-brand > span { font-size: 20px; } .hero-floating-actions .mobile-menu-trigger { display: inline-flex; }
  .collection-hero { --hero-radius: 24px; }
- .hero-copy { inset-inline-start: 24px; width: auto; max-width: calc(100% - 48px); }
+ .hero-copy { inset-inline-start: auto; width: auto; max-width: none; margin-inline: 24px; align-self: end; margin-bottom: 96px; }
  .hero-copy h1 { font-size: 36px; line-height: 1.25; } .hero-eyebrow { font-size: 9px; margin-bottom: 18px; }
  .hero-description { font-size: 13px; max-width: 360px; } .hero-bottom { inset-inline: 24px; bottom: 24px; }
  .hero-progress-track { display: none; } .hero-playback { gap: 6px; } .hero-control { width: 34px; height: 34px; }

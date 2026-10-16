@@ -8,7 +8,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useDir } from "@/lib/i18n";
-import { AccountSection } from "@/components/store/account-ui";
+import { AccountSection, formText } from "@/components/store/account-ui";
 import { useAccount, type Address } from "@/stores/account";
 
 export const Route = createFileRoute("/account/addresses")({ head: () => meta("العناوين — Floukaa", "إدارة عناوين توصيل طلبات فلوكة."), component: Addresses });
@@ -23,8 +23,8 @@ function Addresses() {
   const blank = (): Address => ({ id: crypto.randomUUID(), label: "", name: profile?.name ?? "", phone: profile?.phone ?? "", governorate: "القاهرة", city: "", street: "", isDefault: list.length === 0 });
   function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault(); if (!editing) return;
-    const f = new FormData(e.currentTarget), v = (k: string) => String(f.get(k) ?? "").trim();
-    save({ ...editing, label: v("label") || "عنوان", name: v("name"), phone: v("phone"), governorate: v("governorate"), city: v("city"), street: v("street"), isDefault: f.get("isDefault") === "on" || editing.isDefault });
+    const form = e.currentTarget, v = (k: string) => formText(form, k);
+    save({ ...editing, label: v("label") || "عنوان", name: v("name"), phone: v("phone"), governorate: v("governorate"), city: v("city"), street: v("street"), isDefault: new FormData(form).get("isDefault") === "on" || editing.isDefault });
     setEditing(null);
   }
   return <AccountSection title="العناوين" description="عناوين التوصيل المحفوظة." action={<Button onClick={() => setEditing(blank())}><Plus className="size-4" />إضافة عنوان</Button>}>

@@ -18,3 +18,12 @@ export function EmptyState({ title, text, to, cta }: { title: string; text: stri
 }
 
 export const formatDate = (d: string) => new Date(d).toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' })
+
+/** Reusable typed FormData reader — trims text fields. Passwords must NOT use this. */
+export const formText = (form: HTMLFormElement, key: string) =>
+  String(new FormData(form).get(key) ?? "").trim();
+
+/** Reusable inline save feedback — one look for every account form. Toasts still go through notify(). */
+export function FormStatus({ ok, text }: { ok: boolean; text: string }) {
+  return <span role={ok ? "status" : "alert"} className={`text-sm font-bold ${ok ? "text-accent" : "text-destructive"}`}>{text}</span>;
+}

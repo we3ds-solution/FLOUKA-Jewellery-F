@@ -1,5 +1,5 @@
 import * as React from "react";
-import { format, parseISO, isValid } from "date-fns";
+import { format, parseISO, isValid, subYears } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
 import { CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -40,7 +40,8 @@ export function DatePicker({ name, defaultValue, placeholder = "Pick a date", on
       <PopoverContent className="date-picker-popover" align="start" dir={dir} collisionPadding={12}>
         <Calendar
           mode="single"
-          {...(date ? { selected: date, defaultMonth: date } : {})}
+          // Birthday-style fields open near an adult year instead of today.
+          {...(date ? { selected: date, defaultMonth: date } : { defaultMonth: subYears(new Date(), 18) })}
           onSelect={(d) => { setDate(d); setOpen(false); onChange?.(d ? format(d, "yyyy-MM-dd") : ""); }}
           captionLayout="dropdown"
           startMonth={new Date(1940, 0)}

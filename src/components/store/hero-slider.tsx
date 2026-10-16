@@ -70,7 +70,7 @@ export function HeroSlider() {
       <div className="hero-cinema-shade" />
       <div className="hero-copy" key={slide.id} aria-live={playing ? 'off' : 'polite'} aria-atomic="true">
         <p className="hero-eyebrow">{slide.eyebrow}</p>
-        <h1><span>{t(slide.title).split(" — ")[0]}</span><span className="hero-title-accent">{t(slide.title).includes(" — ") ? t(slide.title).split(" — ").slice(1).join(" — ") : t(slide.label)}</span></h1>
+        <h1><span>{t(slide.title).split(" — ")[0]}</span>{t(slide.title).includes(" — ") && <span className="hero-title-accent">{t(slide.title).split(" — ").slice(1).join(" — ")}</span>}</h1>
         <p className="hero-description">{t(slide.description)}</p>
         <div className="hero-links"><Button asChild variant="hero" size="lg"><Link to="/category/$slug" params={{ slug: slide.category }}>{t(slide.action)}<ArrowLeft className="size-5 ltr:-scale-x-100" /></Link></Button><Button asChild variant="heroSecondary" size="lg"><Link to="/shop">{t("كل المنتجات")}<ArrowUpRight className="size-4" /></Link></Button></div>
       </div>
