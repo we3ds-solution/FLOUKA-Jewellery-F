@@ -32,11 +32,17 @@ export function CatalogPage({ title = 'كل المنتجات', query, search }: 
       </Reveal>
       <CatalogToolbar state={c.state} update={c.update} reset={c.reset} activeCount={c.activeCount} hideCategory={!!cat} hideSale={query === 'tag:sale'} />
       {!online && <p role="alert" className="mt-4 rounded-2xl border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm font-bold text-destructive">مفيش اتصال بالإنترنت — المعروض نسخة قديمة وأي تحديث هيستنى الاتصال.</p>}
+      {c.error && !c.loading && (
+        <div role="alert" className="mt-4 flex flex-col items-start gap-3 rounded-2xl border border-destructive/40 bg-destructive/10 px-4 py-4 text-sm">
+          <p className="font-bold text-destructive">تعذر تحميل الكتالوج. تحققي من الاتصال وحاولي مرة أخرى.</p>
+          <button type="button" onClick={c.retry} className="rounded-full bg-primary px-4 py-2 text-xs font-black text-primary-foreground">إعادة المحاولة</button>
+        </div>
+      )}
       {c.loading
         ? <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">{Array.from({ length: 10 }, (_, i) => <div key={i} className="aspect-[4/5] animate-pulse rounded-2xl bg-muted" />)}</div>
         : c.products.length
           ? <Stagger key={JSON.stringify(c.state)} className="grid grid-cols-2 gap-x-3 gap-y-8 md:grid-cols-3 md:gap-x-5 lg:grid-cols-4 xl:grid-cols-5">{c.products.map(x => <StaggerItem key={x.id}><ProductCard product={x} /></StaggerItem>)}</Stagger>
-          : <Reveal className="py-20 text-center text-muted-foreground">{t("لا توجد منتجات مطابقة.")}</Reveal>}
+          : !c.error ? <Reveal className="py-20 text-center text-muted-foreground">{t("لا توجد منتجات مطابقة.")}</Reveal> : null}
       <CatalogPagination page={c.state.page} totalPages={c.totalPages} onChange={(p) => c.update({ page: p })} />
     </div>
   )

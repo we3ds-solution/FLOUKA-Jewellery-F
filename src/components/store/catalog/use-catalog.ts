@@ -38,10 +38,12 @@ export function useCatalog(base?: string, initial: Partial<CatalogState> = {}) {
   const [data, setData] = useState<{ products: ShopifyProduct[]; total: number; totalPages: number }>({ products: [], total: 0, totalPages: 1 });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<unknown>(null);
+  const [retryToken, setRetryToken] = useState(0);
 
   // Any filter change resets to page 1; page changes keep filters.
   const update = useCallback((patch: Partial<CatalogState>) => setState((s) => ({ ...s, ...patch, page: patch.page ?? 1 })), []);
   const reset = useCallback(() => setState({ ...DEFAULT_STATE, ...initial, search: "" }), []); // eslint-disable-line react-hooks/exhaustive-deps
+  const retry = useCallback(() => setRetryToken((n) => n + 1), []);
 
   useEffect(() => {
     let alive = true;
@@ -62,9 +64,9 @@ export function useCatalog(base?: string, initial: Partial<CatalogState> = {}) {
       .catch((failure: unknown) => { if (alive) setError(failure); })
       .finally(() => alive && setLoading(false));
     return () => { alive = false; };
-  }, [base, state]);
+  }, [base, state, retryToken]);
 
   const activeCount = [state.category !== (initial.category ?? "all"), state.price !== "all", state.onSale, !!state.search].filter(Boolean).length;
-  if (error) throw error;
-  return { state, update, reset, loading, activeCount, ...data };
+  // Soft error: surface to CatalogPage instead of throwing into the route boundary (#4).
+  return { state, update, reset, retry, loading, error, activeCount, ...data };
 }

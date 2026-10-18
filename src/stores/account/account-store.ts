@@ -29,6 +29,15 @@ type S = {
   setPrefs(p: Partial<Prefs>): void;
 };
 
+/** Demo login is allowed only in dev or test builds — never production. */
+function demoLoginAllowed(): boolean {
+  try {
+    return Boolean(import.meta.env.DEV) || import.meta.env.MODE === "test";
+  } catch {
+    return false;
+  }
+}
+
 export const useAccount = create<S>()(
   persist(
     (set, get) => ({
@@ -48,7 +57,8 @@ export const useAccount = create<S>()(
           set({ signedIn: true });
           return true;
         }
-        if (e === DEMO_EMAIL && hash === demoProfile.passwordHash) {
+        // Demo credentials: DEV/test only (issue #2 acceptance).
+        if (demoLoginAllowed() && e === DEMO_EMAIL && hash === demoProfile.passwordHash) {
           set({
             signedIn: true,
             profile: demoProfile,

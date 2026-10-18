@@ -7,8 +7,7 @@ export type Revalidation = { items: CartItem[]; removed: number; updated: number
 
 // SRP: cart-vs-catalog reconciliation. Pure function over pinned data, so it
 // is unit-testable without network. Drops lines whose product/variant no
-// longer exists and refreshes prices/titles of the rest. Out-of-stock lines
-// are kept (checkout on floukaa.com makes the final call).
+// longer exists or is out of stock, and refreshes prices/titles of the rest.
 export function revalidateLines(items: CartItem[], catalog: WooProduct[]): Revalidation {
   let removed = 0;
   let updated = 0;
@@ -18,7 +17,7 @@ export function revalidateLines(items: CartItem[], catalog: WooProduct[]): Reval
     const node = raw
       ? map(raw).variants.edges.find((e) => e.node.id === item.variantId)?.node
       : undefined;
-    if (!node) {
+    if (!node || node.availableForSale === false) {
       removed++;
       continue;
     }

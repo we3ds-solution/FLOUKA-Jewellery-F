@@ -118,4 +118,11 @@ describe("revalidateLines", () => {
     const wrongVariant = revalidateLines([line("999", "7")], catalog);
     expect(wrongVariant.removed).toBe(1);
   });
+
+  it("drops out-of-stock lines", () => {
+    const catalog = [woo({ id: 7, is_in_stock: false })];
+    const r = revalidateLines([line("7", "7")], catalog);
+    expect(r.removed).toBe(1);
+    expect(r.items).toHaveLength(0);
+  });
 });

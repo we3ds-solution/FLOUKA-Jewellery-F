@@ -16,8 +16,17 @@ export function CartDrawer({ open, setOpen }: { open: boolean; setOpen(v: boolea
     busy = useCart((s) => s.busy),
     update = useCart((s) => s.updateQuantity),
     remove = useCart((s) => s.removeItem),
-    url = useCart((s) => s.checkoutUrl);
+    url = useCart((s) => s.checkoutUrl),
+    syncCart = useCart((s) => s.syncCart);
   const total = items.reduce((a, b) => a + Number(b.price.amount) * b.quantity, 0);
+
+  const handleCheckout = async () => {
+    // Re-validate prices/stock against catalog before hand-off (#3).
+    await syncCart();
+    const nextUrl = useCart.getState().checkoutUrl;
+    if (nextUrl) window.open(nextUrl, "_blank");
+  };
+
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetContent
@@ -129,7 +138,7 @@ export function CartDrawer({ open, setOpen }: { open: boolean; setOpen(v: boolea
               className="w-full"
               size="lg"
               disabled={busy || !url}
-              onClick={() => url && window.open(url, "_blank")}
+              onClick={() => void handleCheckout()}
             >
               {t("إتمام الطلب بأمان")}
             </Button>
